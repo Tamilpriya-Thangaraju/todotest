@@ -4,7 +4,7 @@ import StatsCards from './components/StatsCards';
 import AddTaskForm from './components/AddTaskForm';
 import TaskList from './components/TaskList';
 
-const API_URL = 'http://localhost:8080/api/tasks';
+const API_URL = '/api/tasks';
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
