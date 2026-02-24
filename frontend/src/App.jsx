@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from './components/header';
 import StatsCards from './components/StatsCards';
 import AddTaskForm from './components/AddTaskForm';
@@ -44,7 +44,7 @@ const App = () => {
     fetchStats();
   }, [fetchTasks, fetchStats]);
 
-  const addTask = async (title) => {
+  const addTask = useCallback(async (title) => {
     try {
       const response = await fetch(API_URL, {
         method: 'POST',
@@ -57,9 +57,9 @@ const App = () => {
     } catch (error) {
       console.error('Error adding task:', error);
     }
-  };
+  }, [tasks, fetchStats]);
 
-  const toggleTask = async (id) => {
+  const toggleTask = useCallback(async (id) => {
     try {
       const response = await fetch(`${API_URL}/${id}/toggle`, {
         method: 'PATCH',
@@ -71,9 +71,9 @@ const App = () => {
     } catch (error) {
       console.error('Error toggling task:', error);
     }
-  };
+  }, [tasks, fetchStats]);
 
-  const deleteTask = async (id) => {
+  const deleteTask = useCallback(async (id) => {
     try {
       await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
       setTasks(tasks.filter(t => t.id !== id));
@@ -81,7 +81,7 @@ const App = () => {
     } catch (error) {
       console.error('Error deleting task:', error);
     }
-  };
+  }, [tasks, fetchStats]);
 
   return (
     <div className="app-container">
