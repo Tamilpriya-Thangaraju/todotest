@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Header from './components/header';
 import StatsCards from './components/StatsCards';
 import AddTaskForm from './components/AddTaskForm';
@@ -11,32 +11,24 @@ const App = () => {
   const [filter, setFilter] = useState('all');
   const [stats, setStats] = useState({ total: 0, active: 0, completed: 0 });
 
-  // Fetch tasks from backend
-  useEffect(() => {
-    fetchTasks();
-    fetchStats();
-  }, [filter]);
-
-  const fetchTasks = async () => {
+  // Declare fetchTasks with useCallback
+  const fetchTasks = useCallback(async () => {
     try {
-      let url = API_URL;
-      if (filter === 'active') url = `${API_URL}?filter=active`;
-      if (filter === 'completed') url = `${API_URL}?filter=completed`;
-      
-      const response = await fetch(API_URL);
+      const endpoint = filter === 'all' ? '' : `?filter=${filter}`;
+      const response = await fetch(`${API_URL}${endpoint}`);
       const data = await response.json();
-      
+
       let filteredData = data;
       if (filter === 'active') filteredData = data.filter(t => !t.completed);
       if (filter === 'completed') filteredData = data.filter(t => t.completed);
-      
+
       setTasks(filteredData);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
-  };
+  }, [filter]);
 
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/stats/summary`);
       const data = await response.json();
@@ -44,7 +36,13 @@ const App = () => {
     } catch (error) {
       console.error('Error fetching stats:', error);
     }
-  };
+  }, []);
+
+  // useEffect with proper dependencies
+  useEffect(() => {
+    fetchTasks();
+    fetchStats();
+  }, [fetchTasks, fetchStats]);
 
   const addTask = async (title) => {
     try {
