@@ -1,13 +1,40 @@
-node_modules
-npm-debug.log
+# Git
 .git
 .gitignore
-*.md
-.DS_Store
-target
+.gitattributes
+
+# Node
+node_modules
+npm-debug.log
+.npm
+dist
+build
+
+# Maven
+target/
+.m2/
+*.log
+
+# IDE
 .vscode
 .idea
-*.iml
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# CI/CD
+.github
+
+# Env
 .env
 .env.local
-dist
+.env.*.local
