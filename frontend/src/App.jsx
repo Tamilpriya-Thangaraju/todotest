@@ -11,18 +11,15 @@ const App = () => {
   const [filter, setFilter] = useState('all');
   const [stats, setStats] = useState({ total: 0, active: 0, completed: 0 });
 
-  // Declare fetchTasks with useCallback
   const fetchTasks = useCallback(async () => {
     try {
-      const endpoint = filter === 'all' ? '' : `?filter=${filter}`;
+      const endpoint = filter === 'all' ? '/tasks' : `/tasks?status=${filter}`;
       const response = await fetch(`${API_URL}${endpoint}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
-
-      let filteredData = data;
-      if (filter === 'active') filteredData = data.filter(t => !t.completed);
-      if (filter === 'completed') filteredData = data.filter(t => t.completed);
-
-      setTasks(filteredData);
+      setTasks(data);
     } catch (error) {
       console.error('Error fetching tasks:', error);
     }
@@ -31,6 +28,9 @@ const App = () => {
   const fetchStats = useCallback(async () => {
     try {
       const response = await fetch(`${API_URL}/stats/summary`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       setStats(data);
     } catch (error) {
