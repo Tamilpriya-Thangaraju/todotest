@@ -3,10 +3,11 @@ FROM node:20-alpine AS frontend-builder
 WORKDIR /app/frontend
 
 # Copy package files first
-COPY frontend/package*.json ./
+COPY frontend/package.json ./
+COPY frontend/package-lock.json* ./
 
 # Install dependencies
-RUN npm ci --prefer-offline --no-audit
+RUN npm install
 
 # Copy source code
 COPY frontend/ .
@@ -28,7 +29,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre
 WORKDIR /app
 
-# Install nginx and curl for health checks
+# Install nginx
 RUN apt-get update && apt-get install -y nginx curl && rm -rf /var/lib/apt/lists/*
 
 # Copy nginx configuration
@@ -51,4 +52,4 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:8080/actuator/health || exit 1
 
 # Start both nginx and Java application
-CMD service nginx start && java -jar /app/app.jar
+CMD ["sh", "-c", "service nginx start && java -jar /app/app.jar"]
