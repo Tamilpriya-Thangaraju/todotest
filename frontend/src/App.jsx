@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
+import Header from './components/header';
 import StatsCards from './components/StatsCards';
 import AddTaskForm from './components/AddTaskForm';
 import TaskList from './components/TaskList';
